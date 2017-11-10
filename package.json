@@ -1,0 +1,25 @@
+{
+  "name": "co-tchar",
+  "version": "0.0.1",
+  "description": "co routines using generators",
+  "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {},
+  "scripts": {
+    "test": "mocha test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Cereceres/co-tchar.git"
+  },
+  "keywords": [
+    "coroutines",
+    "generators"
+  ],
+  "author": "Jesus Cereceres",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Cereceres/co-tchar/issues"
+  },
+  "homepage": "https://github.com/Cereceres/co-tchar#readme"
+}
