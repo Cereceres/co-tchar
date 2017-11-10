@@ -1,9 +1,9 @@
-const slice = Array.prototype.slice
+const slice = Array.prototype.slice;
 
 const cotchar = function(gen) {
-  if (typeof gen.next !== 'function') gen = gen.apply(this, slice.call(arguments, 0))
+  if (typeof gen.next !== 'function') gen = gen.apply(this, slice.call(arguments, 0));
 
-  if (typeof gen.next !== 'function') return Promise.all(gen)
+  if (typeof gen.next !== 'function') return Promise.all(gen);
 
   return new Promise((resolve, reject) => {
     let onError = null
@@ -18,24 +18,26 @@ const cotchar = function(gen) {
     }
 
     onFull = (value) => {
-      if (value instanceof Promise) return value.then(next).catch((error) => next({ error }))
+      console.log('value = ', value)
+      if (value instanceof Promise) return value.then(next).catch((error) => next({ error }));
 
-      if (value && value.then) return value.then(next)
+      if (value && value.then) return value.then(next);
 
-      onFull(cotchar(value))
+      onFull(cotchar(value));
     }
 
     next = (response) => {
       try {
-        const result = gen.next(response)
-        if (result.done) return resolve(result.value)
-        onFull(result.value)
+        const result = gen.next(response);
+        if (!result.done) return onFull(result.value)
+        console.log('response ', response)
+        resolve(response);
       } catch (error) {
         onError(error)
       }
-    }
-    return next()
-  })
-}
+    };
+    return next();
+  });
+};
 
-module.exports = cotchar
+module.exports = cotchar;
