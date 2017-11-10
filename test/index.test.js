@@ -11,6 +11,16 @@ describe('test to cotchar', () => {
       .then(() => done())
   });
 
+  it('should catchar a lot of loop', (done) => {
+    co(function *() {
+      for (let i = 0; i < 100000; i++) {
+        const res = yield Promise.resolve(i)
+        assert(res === i)
+      }
+    })
+      .then(() => done())
+  });
+
   it('should catchar a promise rejected', (done) => {
     co(function *() {
       const { error } = yield Promise.reject(new Error('test'))

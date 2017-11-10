@@ -18,25 +18,25 @@ const cotchar = function(gen) {
     }
 
     onFull = (value) => {
-      console.log('value = ', value)
       if (value instanceof Promise) return value.then(next).catch((error) => next({ error }));
 
       if (value && value.then) return value.then(next);
 
-      onFull(cotchar(value));
+      process.nextTick(onFull, cotchar(value));
     }
 
     next = (response) => {
       try {
         const result = gen.next(response);
-        if (!result.done) return onFull(result.value)
-        console.log('response ', response)
+
+        if (!result.done) return process.nextTick(onFull, result.value)
+
         resolve(response);
       } catch (error) {
-        onError(error)
+        process.nextTick(onError, error)
       }
     };
-    return next();
+    return process.nextTick(next);
   });
 };
 
