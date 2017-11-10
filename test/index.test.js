@@ -11,7 +11,7 @@ describe('test to cotchar', () => {
       .then(done)
   });
 
-  it('should catchar the promise', (done) => {
+  it('should catchar a promise rejected', (done) => {
     co(function *() {
       const { error } = yield Promise.reject(new Error('test'))
       assert(error.message === 'test')
@@ -19,13 +19,24 @@ describe('test to cotchar', () => {
       .then(done)
   });
 
-  it('should catchar the promise', (done) => {
+  it('should catch a error thrown', (done) => {
     co(function *() {
       throw new Error('throw')
-      const { error } = yield
-      assert(error.message === 'throw')
-      return yield Promise.resolve()
+      yield
     })
-      .then(done)
+      .catch(() => done())
+  });
+
+
+  it('should catch a error thrown', (done) => {
+    co(function *() {
+      try {
+        throw new Error('throw')
+        yield
+      } catch (error) {
+        assert(error.message === 'throw')
+        done()
+      }
+    })
   });
 });
