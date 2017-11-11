@@ -18,5 +18,7 @@ cotchar(function*(){
     assert(res === 1)
     const {error} = yield Promise.reject(new Error('testing'))
     assert(error.message === 'testing')
+    const {error: error2} = yield [1,Promise.resolve(), Promise.reject()]
+    assert(error2)
 })
 ```
