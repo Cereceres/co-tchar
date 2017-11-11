@@ -1,7 +1,7 @@
 const slice = Array.prototype.slice;
 
-const cotchar = function(gen) {
-  if (typeof gen.next !== 'function') gen = gen.apply(this, slice.call(arguments, 0));
+const cotchar = function(gen, ...args) {
+  if (typeof gen.next !== 'function') gen = gen.apply(this, args);
 
   if (typeof gen.next !== 'function') return Promise.all(gen);
 

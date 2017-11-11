@@ -59,4 +59,15 @@ describe('test to cotchar', () => {
     })
       .then(() => done())
   });
+
+  it('should pass the arguments pass to co routine', (done) => {
+    co(function *(arg) {
+      assert(arg === 1)
+      const res = yield function *() {
+        yield Promise.resolve(0)
+      }
+      assert(res === 0)
+    }, 1)
+      .then(() => done())
+  });
 });
