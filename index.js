@@ -1,7 +1,7 @@
 const slice = Array.prototype.slice;
 
 const cotchar = function(gen, ...args) {
-  if (typeof gen.next !== 'function') gen = gen.apply(this, args);
+  if (typeof gen.next !== 'function' && typeof gen === 'function') gen = gen.apply(this, args);
 
   if (typeof gen.next !== 'function') return Promise.all(gen);
 
@@ -18,10 +18,11 @@ const cotchar = function(gen, ...args) {
     }
 
     onFull = (value) => {
+      console.log('value ', value instanceof Promise)
       if (value instanceof Promise) return value.then(next).catch((error) => next({ error }));
-
+      console.log(' is not promise')
       if (value && value.then) return value.then(next);
-
+      console.log(' is not then')
       process.nextTick(onFull, cotchar(value));
     }
 

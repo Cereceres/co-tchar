@@ -9,16 +9,18 @@ describe('test to cotchar', () => {
       assert(res === 1)
     })
       .then(() => done())
+      .catch(done)
   });
 
   it('should catchar a lot of loop', (done) => {
     co(function *() {
-      for (let i = 0; i < 100000; i++) {
+      for (let i = 0; i < 100; i++) {
         const res = yield Promise.resolve(i)
         assert(res === i)
       }
     })
       .then(() => done())
+      .catch(done)
   });
 
   it('should catchar a promise rejected', (done) => {
@@ -58,6 +60,7 @@ describe('test to cotchar', () => {
       assert(res === 0)
     })
       .then(() => done())
+      .catch(done)
   });
 
   it('should pass the arguments pass to co routine', (done) => {
@@ -69,5 +72,19 @@ describe('test to cotchar', () => {
       assert(res === 0)
     }, 1)
       .then(() => done())
+      .catch(done)
+  });
+
+  it('should catch the interator', (done) => {
+    co(function *(arg) {
+      assert(arg === 1)
+      const res = yield function *() {
+        yield Promise.resolve(0)
+      }
+      const { error } = yield [ 1, Promise.resolve(2), Promise.reject(new Error(3)) ]
+      assert(error.message === '3')
+      done()
+    }, 1)
+      .catch(done)
   });
 });
