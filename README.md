@@ -1,5 +1,5 @@
 # co-tchar
-co routines using generators
+co routines using generators, avite use try catch to get error froms promises rejected.
 
 # co-tchar(generator || interator) -> Promise
 

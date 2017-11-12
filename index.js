@@ -18,11 +18,8 @@ const cotchar = function(gen, ...args) {
     }
 
     onFull = (value) => {
-      console.log('value ', value instanceof Promise)
       if (value instanceof Promise) return value.then(next).catch((error) => next({ error }));
-      console.log(' is not promise')
       if (value && value.then) return value.then(next);
-      console.log(' is not then')
       process.nextTick(onFull, cotchar(value));
     }
 

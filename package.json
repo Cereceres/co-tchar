@@ -4,7 +4,9 @@
   "description": "co routines using generators",
   "main": "index.js",
   "dependencies": {},
-  "devDependencies": {},
+  "devDependencies": {
+    "co": "^4.6.0"
+  },
   "scripts": {
     "test": "mocha test"
   },
