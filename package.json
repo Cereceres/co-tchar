@@ -1,6 +1,6 @@
 {
   "name": "co-tchar",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "co routines using generators",
   "main": "index.js",
   "dependencies": {},
