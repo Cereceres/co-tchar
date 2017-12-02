@@ -75,6 +75,25 @@ describe('test to cotchar', () => {
             .catch(done);
     });
 
+    it('should pass the arguments pass to co routine', (done) => {
+        let i = 0;
+        co(function *(arg) {
+            assert(arg === 1);
+            const res = yield function *() {
+                yield Promise.resolve(0);
+                yield Promise.reject();
+                i++;
+                yield Promise.resolve('testing');
+            };
+            console.log('res ', res);
+            assert(res === 'testing');
+        }, 1)
+            .then(() => {
+                if(i === 1) done();
+            })
+            .catch(done);
+    });
+
     it('should catch the interator', (done) => {
         co(function *(arg) {
             assert(arg === 1);
