@@ -85,8 +85,26 @@ describe('test to cotchar', () => {
                 i++;
                 yield Promise.resolve('testing');
             };
-            console.log('res ', res);
             assert(res === 'testing');
+        }, 1)
+            .then(() => {
+                if(i === 1) done();
+            })
+            .catch(done);
+    });
+
+
+    it('should pass the arguments pass to co routine', (done) => {
+        let i = 0;
+        co(function *(arg) {
+            assert(arg === 1);
+            const { error } = yield function *() {
+                yield Promise.resolve(0);
+                yield Promise.reject();
+                i++;
+                throw new Error('testing');
+            };
+            assert(error.message === 'testing');
         }, 1)
             .then(() => {
                 if(i === 1) done();
