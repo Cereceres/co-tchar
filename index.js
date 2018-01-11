@@ -1,41 +1,40 @@
-const slice = Array.prototype.slice;
-
-const cotchar = function(gen, ...args) {
+const cotchar = module.exports = function(gen, ...args) {
+    if (gen instanceof Promise) return gen;
     if (typeof gen.next !== 'function' && typeof gen === 'function') gen = gen.apply(this, args);
 
-    if (typeof gen.next !== 'function') return Promise.all(gen);
+    if(gen.constructor === Object) return Promise.all(Object.keys(gen).map(cotchar));
+
+    if (Array.isArray(gen)) return Promise.all(gen.map(cotchar));
+    if (typeof gen.next !== 'function') return gen;
 
     return new Promise((resolve, reject) => {
-        let onError = null;
-        let next = null;
-        let onFull = null;
-        onError = (error) => {
+        const onError = (error) => {
             try {
                 gen.throw(error);
-            } catch (e) {
-                reject(e);
+            } catch (err) {
+                reject(err);
             }
         };
 
-        onFull = (value) => {
-            if (value instanceof Promise) return value.then(next).catch((error) => next({ error: error }));
+        const onFull = (value) => {
+            if (value instanceof Promise) return value.then(next).catch((error) => next({ error }));
             if (value && value.then) return value.then(next);
-            process.nextTick(onFull, cotchar(value));
+            onFull(cotchar(value));
         };
 
-        next = (response) => {
+        const next = (response) => {
             try {
                 const result = gen.next(response);
 
-                if (!result.done) return process.nextTick(onFull, result.value);
+                if (!result.done) return onFull(result.value);
 
                 resolve(response);
             } catch (error) {
-                process.nextTick(onError, error);
+                onError(error);
             }
         };
-        return process.nextTick(next);
+        next();
     });
 };
 
-module.exports = cotchar;
+

@@ -75,7 +75,7 @@ describe('test to cotchar', () => {
             .catch(done);
     });
 
-    it('should pass the arguments pass to co routine', (done) => {
+    it('should exec all generator given', (done) => {
         let i = 0;
         co(function *(arg) {
             assert(arg === 1);
@@ -94,7 +94,7 @@ describe('test to cotchar', () => {
     });
 
 
-    it('should pass the arguments pass to co routine', (done) => {
+    it('should catch the error throw in generator', (done) => {
         let i = 0;
         co(function *(arg) {
             assert(arg === 1);
@@ -112,7 +112,38 @@ describe('test to cotchar', () => {
             .catch(done);
     });
 
-    it('should catch the interator', (done) => {
+    it('should pass the arguments pass to co routine', (done) => {
+        let i = 0;
+        co(function *(arg) {
+            assert(arg === 1);
+            const { error } = yield (function *() {
+                yield Promise.resolve(0);
+                yield Promise.reject();
+                i++;
+                throw new Error('testing');
+            }());
+            assert(error.message === 'testing');
+        }, 1)
+            .then(() => {
+                if(i === 1) done();
+            })
+            .catch(done);
+    });
+
+    it('should catch the iterator', (done) => {
+        co(function *(arg) {
+            assert(arg === 1);
+            const res = yield function *() {
+                yield Promise.resolve(0);
+            };
+            const { error } = yield [ 1, Promise.resolve(2), Promise.reject(new Error(3)) ];
+            assert(error.message === '3');
+            done();
+        }, 1)
+            .catch(done);
+    });
+
+    it('should catch the iterator', (done) => {
         co(function *(arg) {
             assert(arg === 1);
             const res = yield function *() {
