@@ -1,11 +1,15 @@
+const { isArray } = Array;
 const cotchar = module.exports = function(gen, ...args) {
     if (gen instanceof Promise) return gen;
-    if (typeof gen.next !== 'function' && typeof gen === 'function') gen = gen.apply(this, args);
+    const isGenerator = typeof gen.next !== 'function' &&
+        typeof gen === 'function';
+    if (isGenerator) gen = gen.apply(this, args);
 
     if(gen.constructor === Object) return Promise.all(Object.keys(gen).map(cotchar));
 
-    if (Array.isArray(gen)) return Promise.all(gen.map(cotchar));
-    if (typeof gen.next !== 'function') return gen;
+    if (isArray(gen)) return Promise.all(gen.map(cotchar));
+    const isIterator = typeof gen.next === 'function';
+    if (!isIterator) return Promise.resolve(gen);
 
     return new Promise((resolve, reject) => {
         const onError = (error) => {
