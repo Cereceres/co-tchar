@@ -155,4 +155,13 @@ describe('test to cotchar', () => {
         }, 1)
             .catch(done);
     });
+
+    it('should catch the iterator', (done) => {
+        try {
+            co();
+        } catch (error) {
+            assert(error.message === 'Generator is not defined');
+            done();
+        }
+    });
 });

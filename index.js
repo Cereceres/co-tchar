@@ -1,6 +1,9 @@
 const { isArray } = Array;
 const cotchar = module.exports = function(gen, ...args) {
+    if (!gen) throw new Error('Generator is not defined');
+
     if (gen instanceof Promise) return gen;
+
     const isGenerator = typeof gen.next !== 'function' &&
         typeof gen === 'function';
     if (isGenerator) gen = gen.apply(this, args);
